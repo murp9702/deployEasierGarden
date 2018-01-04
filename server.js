@@ -3,13 +3,14 @@ var router = express.Router();
 var mongoose = require('mongoose')
 var bodyParser = require('body-parser')
 var Database = require('./database')
+var path = require('path')
 
 
+app.use(express.static(path.join(__dirname, 'dist')));
 
-// route for homepage
 router.get('/', function (req, res) {
-    res.sendFile("./html/index.html", {
-        root: "./public"
+    res.sendFile("/index.html", {
+        root: "./dist"
     })
 })
 
