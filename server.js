@@ -4,10 +4,13 @@ var mongoose = require('mongoose')
 var bodyParser = require('body-parser')
 var Database = require('./database')
 var path = require('path')
+var app = express()
 
-
+// static file server for sending down to client
 app.use(express.static(path.join(__dirname, 'dist')));
 
+
+// send homepage
 router.get('/', function (req, res) {
     res.sendFile("/index.html", {
         root: "./dist"
@@ -26,6 +29,12 @@ router.post('/postData', function (req, res) {
         lastFrostDate: ''
     }
 
+    // ##### To Do ########
+    // work on error handling when zipcode is not found in database
+
+    
+    // get stationId from db using zipcode, then use stationId to look up first and last frost dates in database
+
     // get station id based on user zipcode input
     Database.ZipCode.findOne({
             // search by zipcode, need to make sure submitted value is a number
@@ -40,6 +49,8 @@ router.post('/postData', function (req, res) {
             firstAndLastObject.zipcode = zipCodeObject.zipcode
             firstAndLastObject.city = zipCodeObject.city
             firstAndLastObject.stationID = zipCodeObject.stationID
+            
+            
             // search for one first frost date with stationID
             Database.FirstFrost.findOne({
                     // search by stationID, sending stationID from zipcode search
@@ -54,7 +65,9 @@ router.post('/postData', function (req, res) {
                     console.log('firstFrostObject:', firstFrostObject.firstFrost.split("")[0])
                     firstAndLastObject.firstFrostDate = firstFrostObject.firstFrost
                 })
-            // search database for last frost date
+            
+            
+                // search database for last frost date
             Database.LastFrost.findOne({
                     // search by stationID
                     stationID: zipCodeObject.stationID
